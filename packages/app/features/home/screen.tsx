@@ -12,11 +12,15 @@ import {
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
 import React, { useState } from 'react'
 import { useLink } from 'solito/link'
+// import {useKindeAuth} from "@kinde-oss/kinde-auth-nextjs"
 
 export function HomeScreen() {
   const linkProps = useLink({
     href: '/user/nate',
   })
+
+  // const kindeAuthPayload = useKindeAuth()
+  // console.log(kindeAuthPayload)
 
   return (
     <YStack f={1} jc="center" ai="center" p="$4" space>

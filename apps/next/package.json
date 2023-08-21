@@ -3,20 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "cd ../.. && yarn build && cd apps/next && TAMAGUI_TARGET=web next build",
+    "dev": "TAMAGUI_TARGET=web yarn with-env next dev",
+    "build": "cd ../.. && yarn build && cd apps/next && TAMAGUI_TARGET=web yarn with-env next build",
     "start": "next start",
     "serve": "NODE_ENV=production next start --port 8151",
-    "lint": "next lint"
+    "lint": "next lint",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@tamagui/next-theme": "latest",
     "app": "0.0.0",
-    "next": "13.4.4",
+    "dotenv-cli": "^7.3.0",
+    "next": "^13.4.19",
     "raf": "^3.4.1",
-    "react": "^18.2.0",
+    "react": "18.2.0",
     "react-dom": "^18.2.0",
-    "react-native": "^0.71.4",
+    "react-native": "0.71.8",
     "react-native-web": "^0.18.12",
     "react-native-web-lite": "latest",
     "vercel": "latest"

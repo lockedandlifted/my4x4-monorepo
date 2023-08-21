@@ -1,12 +1,14 @@
 'use client'
-
+import { KindeProvider } from "@kinde-oss/kinde-auth-nextjs"
 import { TamaguiProvider } from './TamaguiProvider'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <TamaguiProvider>{children}</TamaguiProvider>
+        <KindeProvider>
+          <TamaguiProvider>{children}</TamaguiProvider>
+        </KindeProvider>
       </body>
     </html>
   )
