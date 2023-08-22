@@ -12,13 +12,12 @@ import Constants from 'expo-constants'
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
  */
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink } from '@trpc/client'
+
 import { transformer } from '@my/api/transformer'
-
-// import { useAuth } from '@clerk/clerk-expo'
-
+import { useKindeAuth } from 'app/utils/kindeAuth'
 /**
  * A set of typesafe hooks for consuming your API.
  */
@@ -58,10 +57,28 @@ type TRPCProviderProps = {
 }
 
 export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
-  // const { getToken } = useAuth()
+  // Kinde Auth
+  const { getToken } = useKindeAuth()
+
+  const authTokenRef = useRef<string>('')
+
+  useEffect(() => {
+    async function getAuthToken() {
+      const { access_token } = await getToken()
+      authTokenRef.current = access_token
+    }
+
+    getAuthToken()
+  }, [])
   
   // Query Client
-  const [queryClient] = React.useState(() => new QueryClient())
+  const [queryClient] = React.useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      }
+    }
+  }))
   
   // TRPC Client
   const [trpcClient] = React.useState(() =>
@@ -70,8 +87,7 @@ export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
       links: [
         httpBatchLink({
           async headers() {
-            const authToken = 'AUTH_TOKEN'
-            return { Authorization: authToken } as HTTPHeaders
+            return { Authorization: `Bearer ${authTokenRef.current}` } as HTTPHeaders
           },
           url: `${getBaseUrl()}/api/trpc`,
         }),

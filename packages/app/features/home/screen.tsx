@@ -21,7 +21,6 @@ import { trpc } from 'app/utils/trpc'
 export function HomeScreen() {
   const kindeAuthPayload = useKindeAuth()
   const { isAuthenticated } = kindeAuthPayload
-  console.log(kindeAuthPayload)
 
   const linkProps = useLink({
     href: '/user/nate',

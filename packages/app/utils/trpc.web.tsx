@@ -4,14 +4,13 @@
  *
  * We also create a few inference helpers for input and output types.
  */
-import React from 'react'
+import React, { useRef } from 'react'
 import { httpBatchLink, loggerLink } from "@trpc/client";
-import { createTRPCNext } from "@trpc/next";
 import { HTTPHeaders, createTRPCReact } from '@trpc/react-query'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
 import { transformer } from '@my/api/transformer'
+import { useKindeAuth } from 'app/utils/kindeAuth'
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@my/api/index";
@@ -36,7 +35,7 @@ export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
   // Kinde Auth
   const { getToken } = useKindeAuth()
 
-  const authTokenRef = React.useRef<string>('')
+  const authTokenRef = useRef<string>('')
   authTokenRef.current = getToken() || ''
 
   // Query Client

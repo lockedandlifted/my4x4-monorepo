@@ -1,3 +1,4 @@
+import { use, useEffect, useState } from 'react'
 import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x';
 
 export const client = new KindeSDK(
@@ -7,11 +8,35 @@ export const client = new KindeSDK(
   process.env.KINDE_NATIVE_POST_LOGOUT_REDIRECT_URL || '',
 )
 
+const defaultState = {
+  isAuthenticated: false,
+  isLoading: true,
+}
+
 export function useKindeAuth(){
+  const [state, setState] = useState(defaultState)
+  const { isAuthenticated, isLoading } = state
+
+  useEffect(() => {
+    async function checkIsAuthenticated() {
+      const isAuthenticated = await client.isAuthenticated
+
+      setState((prevState) => {
+        return {
+          ...prevState,
+          isAuthenticated,
+          isLoading: false,
+        }
+      })
+    }
+
+    checkIsAuthenticated()
+  }, [])
+
   return {
     getToken: () => client.getToken(),
-    isAuthenticated: false, // TODO
-    isLoading: false, // TODO
+    isAuthenticated,
+    isLoading,
     user: {},
   }
 }
