@@ -3,8 +3,9 @@
     "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "paths": {
-      "app/*": ["./packages/app/*"],
-      "@my/ui/*": ["./packages/ui/*"]
+      "@my/api/*": ["./packages/api/*"],
+      "@my/ui/*": ["./packages/ui/*"],
+      "app/*": ["./packages/app/*"]
     }
   },
   "extends": "expo/tsconfig.base",

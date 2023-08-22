@@ -2,6 +2,7 @@ import {
   Anchor,
   Button,
   H1,
+  H2,
   Paragraph,
   Separator,
   Sheet,
@@ -12,15 +13,30 @@ import {
 import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons'
 import React, { useState } from 'react'
 import { useLink } from 'solito/link'
-// import {useKindeAuth} from "@kinde-oss/kinde-auth-nextjs"
+
+import { useKindeAuth } from "app/utils/kindeAuth"
+
+import { trpc } from 'app/utils/trpc'
 
 export function HomeScreen() {
+  const kindeAuthPayload = useKindeAuth()
+  const { isAuthenticated } = kindeAuthPayload
+  console.log(kindeAuthPayload)
+
   const linkProps = useLink({
     href: '/user/nate',
   })
 
-  // const kindeAuthPayload = useKindeAuth()
-  // console.log(kindeAuthPayload)
+  const helloQuery = trpc.example.hello.useQuery(
+    { text: 'trpc' },
+  )
+  const { data } = helloQuery
+
+  const authenticatedQuery = trpc.example.getSecretMessage.useQuery(
+    undefined,
+    { enabled: isAuthenticated },
+  )
+  const { data: authData } = authenticatedQuery
 
   return (
     <YStack f={1} jc="center" ai="center" p="$4" space>
@@ -47,6 +63,18 @@ export function HomeScreen() {
             give it a ⭐️
           </Anchor>
         </Paragraph>
+
+        {!!data?.greeting && (
+          <H1 textAlign="center">
+            {data?.greeting}
+          </H1>
+        )}
+
+        {!!authData && (
+          <H2 textAlign="center">
+            {authData}
+          </H2>
+        )}
       </YStack>
 
       <XStack>
