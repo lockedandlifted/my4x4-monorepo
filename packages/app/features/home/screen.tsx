@@ -26,6 +26,10 @@ export function HomeScreen() {
     href: '/user/nate',
   })
 
+  const allQuery = trpc.example.getAll.useQuery()
+  const { data: allData } = allQuery
+  console.log(allData)
+
   const helloQuery = trpc.example.hello.useQuery(
     { text: 'trpc' },
   )

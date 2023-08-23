@@ -1,0 +1,29 @@
+{
+  "name": "@my/db",
+  "version": "0.1.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "prisma": {
+    "seed": "ts-node ./prisma/seed.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prisma:generate": "yarn with-env prisma generate",
+    "prisma:studio": "yarn with-env prisma studio",
+    "prisma:migrate": "yarn with-env prisma migrate",
+    "prisma:migrate:dev": "yarn with-env prisma migrate dev",
+    "clean": "rm -rf .turbo node_modules",
+    "with-env": "dotenv -e ../../.env --",
+    "dev": "yarn with-env prisma studio --port 5556 --browser=none",
+    "db-push": "yarn with-env prisma db push && yarn with-env prisma db seed",
+    "db-generate": "yarn with-env prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "latest"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^6.0.0",
+    "prisma": "latest",
+    "typescript": "4.9.4"
+  }
+}

@@ -1,4 +1,4 @@
-// import { prisma } from '@my4x4/db'
+import { prisma } from '@my/db'
 import { JwtRsaVerifier } from 'aws-jwt-verify'
 
 import type { inferAsyncReturnType } from '@trpc/server'
@@ -29,7 +29,7 @@ type CreateContextOptions = {
 export const createInnerTRPCContext = async (options: CreateContextOptions) => {
   return {
     user: options.user,
-    // prisma,
+    prisma,
   }
 }
 
