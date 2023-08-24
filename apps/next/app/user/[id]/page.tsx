@@ -1,5 +1,5 @@
 'use client'
 
-import { UserDetailScreen } from 'app/features/user/detail-screen'
+import { UserDetailScreen } from 'app/screens/user/detail-screen'
 
 export default UserDetailScreen

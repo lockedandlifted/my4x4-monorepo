@@ -2,6 +2,18 @@
   "$schema": "https://turborepo.org/schema.json",
   "globalEnv": ["DISABLE_EXTRACTION", "NODE_ENV", "EAS_BUILD_PLATFORM"],
   "pipeline": {
+    "db-generate": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
+    "migrate": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
+    "seed": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
     "build": {
       "env": ["DISABLE_EXTRACTION", "NODE_ENV", "EAS_BUILD_PLATFORM"],
       "dependsOn": ["^build"],

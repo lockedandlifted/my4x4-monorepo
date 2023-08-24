@@ -26,20 +26,9 @@ export function HomeScreen() {
     href: '/user/nate',
   })
 
-  const allQuery = trpc.example.getAll.useQuery()
-  const { data: allData } = allQuery
-  console.log(allData)
-
-  const helloQuery = trpc.example.hello.useQuery(
-    { text: 'trpc' },
-  )
-  const { data } = helloQuery
-
-  const authenticatedQuery = trpc.example.getSecretMessage.useQuery(
-    undefined,
-    { enabled: isAuthenticated },
-  )
-  const { data: authData } = authenticatedQuery
+  const projectsQuery = trpc.projects.getProjects.useQuery({ limit: 10 })
+  const { data: projectsData } = projectsQuery
+  console.log(projectsData)
 
   return (
     <YStack f={1} jc="center" ai="center" p="$4" space>
@@ -66,18 +55,6 @@ export function HomeScreen() {
             give it a ⭐️
           </Anchor>
         </Paragraph>
-
-        {!!data?.greeting && (
-          <H1 textAlign="center">
-            {data?.greeting}
-          </H1>
-        )}
-
-        {!!authData && (
-          <H2 textAlign="center">
-            {authData}
-          </H2>
-        )}
       </YStack>
 
       <XStack>
