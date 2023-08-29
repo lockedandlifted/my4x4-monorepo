@@ -17,6 +17,7 @@ export const NativeToast = () => {
       exitStyle={{ opacity: 0, scale: 1, y: -20 }}
       y={0}
       opacity={1}
+      borderRadius={5}
       scale={1}
       animation="quick"
     >

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@tamagui/animations-react-native": "latest",
+    "@tamagui/config": "latest",
     "@tamagui/font-inter": "latest",
     "@tamagui/react-native-media-driver": "latest",
     "@tamagui/shorthands": "latest",

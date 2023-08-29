@@ -1,18 +1,1044 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Config
+// -------
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
+// Models
+// -------
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Account {
+  id                String  @id @default(uuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model ActivityItem {
+  id        String @id @default(uuid())
+  ownerId   String @map("owner_id")
+  ownerType String @map("owner_type")
+
+  eventType String @map("event_type")
+
+  subjectId   String @map("subject_id")
+  subjectType String @map("subject_type")
+
+  parentSubjectId   String? @map("parent_subject_id")
+  parentSubjectType String? @map("parent_subject_type")
+
+  parentItemId String?        @map("parent_item_id")
+  parentItem   ActivityItem?  @relation("ItemSubItems", fields: [parentItemId], references: [id])
+  subItems     ActivityItem[] @relation("ItemSubItems")
+
+  isGroup Boolean @default(false) @map("is_group")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("activity_items")
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  unitNumber   String?  @map("unit_number")
+  streetNumber String?  @map("street_number")
+  streetName   String?  @map("street_name")
+  suburbName   String?  @map("suburb_name")
+  stateName    String?  @map("state_name")
+  country      Country? @relation(fields: [countryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  countryId    String?  @map("country_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  businessLocationsAddresses BusinessLocationsAddress[]
+
+  @@map("addresses")
+}
+
+model Attachment {
+  id               String  @id @default(uuid())
+  fileExtension    String? @map("file_extension")
+  fileKey          String  @map("file_key")
+  filename         String
+  originalFilename String  @map("original_filename")
+  user             User?   @relation(fields: [userId], references: [id])
+  userId           String? @map("user_id")
+  title            String?
+  description      String? @db.Text()
+  width            Int?
+  height           Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  logBookEntriesAttachments LogBookEntriesAttachment[]
+  postsAttachments          PostsAttachment[]
+
+  @@map("attachments")
+}
+
+model Attribute {
+  id    String  @id @default(uuid())
+  key   String  @unique
+  title String
+  sort  Int?
+  type  String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  attributeValues    AttributeValue[]
+  projectsAttributes ProjectsAttribute[]
+
+  @@map("attributes")
+}
+
+model AttributeValue {
+  id          String    @id @default(uuid())
+  key         String    @unique
+  title       String
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  attributeId String    @map("attribute_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  projectsAttributes ProjectsAttribute[]
+
+  @@map("attribute_values")
+}
+
+model Business {
+  id             String  @id @default(uuid())
+  title          String
+  website        String?
+  createdByOwner Boolean @default(true) @map("created_by_owner")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  businessLocations  BusinessLocation[]
+  businessesImages   BusinessesImage[]
+  businessesServices BusinessesService[]
+  businessesUsers    BusinessesUser[]
+  projectsParts      ProjectsPart[]
+
+  @@map("businesses")
+}
+
+model BusinessesImage {
+  id         String   @id @default(uuid())
+  business   Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  businessId String   @map("business_id")
+  image      Image    @relation(fields: [imageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageId    String   @map("image_id")
+  sort       Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([businessId, imageId])
+  @@map("businesses_images")
+}
+
+model BusinessLocation {
+  id         String   @id @default(uuid())
+  business   Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  businessId String   @map("business_id")
+
+  title String?
+  email String?
+  phone String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  businessLocationsAddresses BusinessLocationsAddress[]
+  businessLocationsServices  BusinessLocationsService[]
+
+  @@map("business_locations")
+}
+
+model BusinessLocationsAddress {
+  id                 String           @id @default(uuid())
+  address            Address          @relation(fields: [addressId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  addressId          String           @map("address_id")
+  businessLocation   BusinessLocation @relation(fields: [businessLocationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  businessLocationId String           @map("business_location_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("business_locations_addresses")
+}
+
+model BusinessLocationsService {
+  id                 String           @id @default(uuid())
+  businessLocation   BusinessLocation @relation(fields: [businessLocationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  businessLocationId String           @map("business_location_id")
+  service            Service          @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  serviceId          String           @map("service_id")
+
+  @@map("business_locations_services")
+}
+
+model BusinessesService {
+  id         String   @id @default(uuid())
+  business   Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  businessId String   @map("business_id")
+  service    Service  @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  serviceId  String   @map("service_id")
+
+  @@map("businesses_services")
+}
+
+model BusinessesUser {
+  id         String   @id @default(uuid())
+  business   Business @relation(fields: [businessId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  businessId String   @map("business_id")
+  user       User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId     String   @map("user_id")
+  sort       Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([businessId, userId])
+  @@map("businesses_users")
+}
+
+model Category {
+  id             String        @id @default(uuid())
+  key            String        @unique
+  title          String
+  categoryType   CategoryType? @relation(fields: [categoryTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  categoryTypeId String?       @map("category_type_id")
+
+  parentCategoryId String?    @map("parent_category_id")
+  parentCategory   Category?  @relation("CategorySubcategories", fields: [parentCategoryId], references: [id])
+  subcategories    Category[] @relation("CategorySubcategories")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  manufacturerParts ManufacturerPart[]
+  postsCategories   PostsCategory[]
+
+  @@map("categories")
+}
+
+model CategoryType {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  categories Category[]
+
+  @@map("category_types")
+}
+
+model Comment {
+  id     String @id @default(uuid())
+  body   String @db.Text()
+  user   User   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId String @map("user_id")
+
+  parentCommentId String?   @map("parent_comment_id")
+  parentComment   Comment?  @relation("CommentSubComments", fields: [parentCommentId], references: [id])
+  subComments     Comment[] @relation("CommentSubComments")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  commentLikes          CommentLike[]
+  postsComments         PostsComment[]
+  projectsComments      ProjectsComment[]
+  projectImagesComments ProjectImagesComment[]
+
+  @@map("comments")
+}
+
+model CommentLike {
+  id        String  @id @default(uuid())
+  comment   Comment @relation(fields: [commentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  commentId String  @map("comment_id")
+  user      User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId    String  @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([commentId, userId])
+  @@map("comment_likes")
+}
+
+model Country {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  addresses         Address[]
+  manufacturerParts ManufacturerPart[]
+  projects          Project[]
+  users             User[]
+
+  @@map("countries")
+}
+
+model ExternalLink {
+  id                 String           @id @default(uuid())
+  title              String
+  url                String
+  externalLinkType   ExternalLinkType @relation(fields: [externalLinkTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  externalLinkTypeId String           @map("external_link_type_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  externalLinkViews         ExternalLinkView[]
+  projectsExternalLinks     ProjectsExternalLink[]
+  projectPartsExternalLinks ProjectPartsExternalLink[]
+  usersExternalLinks        UsersExternalLink[]
+
+  @@map("external_links")
+}
+
+model ExternalLinkType {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  externalLinks ExternalLink[]
+
+  @@map("external_link_type")
+}
+
+model ExternalLinkView {
+  id             String       @id @default(uuid())
+  externalLink   ExternalLink @relation(fields: [externalLinkId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  externalLinkId String       @map("external_link_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("external_link_views")
+}
+
+model Image {
+  id               String  @id @default(uuid())
+  fileKey          String  @map("file_key")
+  filename         String
+  originalFilename String  @map("original_filename")
+  user             User?   @relation(fields: [userId], references: [id])
+  userId           String? @map("user_id")
+  title            String?
+  description      String? @db.Text()
+  width            Int?
+  height           Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  businessesImages BusinessesImage[]
+  imageLikes       ImageLike[]
+  imageTags        ImageTag[]
+  postsImages      PostsImage[]
+  projectsImages   ProjectsImage[]
+  usersImages      UsersImage[]
+
+  @@map("images")
+}
+
+model ImageLike {
+  id      String @id @default(uuid())
+  image   Image  @relation(fields: [imageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageId String @map("image_id")
+  user    User   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId  String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([imageId, userId])
+  @@map("image_likes")
+}
+
+model ImageTag {
+  id      String  @id @default(uuid())
+  image   Image?  @relation(fields: [imageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageId String? @map("image_id")
+  x       Decimal @db.Decimal(8, 3)
+  y       Decimal @db.Decimal(8, 3)
+
+  projectPartsImageTags ProjectPartsImageTag[]
+
+  @@map("image_tags")
+}
+
+model LogBookEntry {
+  id                 String           @id @default(uuid())
+  project            Project          @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId          String           @map("project_id")
+  logBookEntryType   LogBookEntryType @relation(fields: [logBookEntryTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  logBookEntryTypeId String           @map("log_book_entry_type_id")
+  title              String?
+  description        String?          @db.Text()
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  logBookEntriesAttachments LogBookEntriesAttachment[]
+
+  @@map("log_book_entries")
+}
+
+model LogBookEntriesAttachment {
+  id             String       @id @default(uuid())
+  logBookEntry   LogBookEntry @relation(fields: [logBookEntryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  logBookEntryId String       @map("log_book_entry_id")
+  attachment     Attachment   @relation(fields: [attachmentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  attachmentId   String       @map("attachment_id")
+  sort           Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([logBookEntryId, attachmentId])
+  @@map("log_book_entries_attachments")
+}
+
+model LogBookEntryType {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  logBookEntries LogBookEntry[]
+
+  @@map("log_book_entry_types")
+}
+
+model Manufacturer {
+  id                 String            @id @default(uuid())
+  key                String            @unique
+  title              String
+  manufacturerType   ManufacturerType? @relation(fields: [manufacturerTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerTypeId String?           @map("manufacturer_type_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  manufacturerModels ManufacturerModel[]
+  manufacturerParts  ManufacturerPart[]
+  postsManufacturers PostsManufacturer[]
+
+  @@map("manufacturers")
+}
+
+model ManufacturerModel {
+  id             String       @id @default(uuid())
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerId String       @map("manufacturer_id")
+  key            String       @unique
+  title          String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  manufacturerModelSeries ManufacturerModelSeries[]
+  postsManufacturerModels PostsManufacturerModel[]
+  projects                Project[]
+
+  @@map("manufacturer_models")
+}
+
+model ManufacturerModelSeries {
+  id                  String            @id @default(uuid())
+  displayTitle        String?           @map("display_title")
+  manufacturerModel   ManufacturerModel @relation(fields: [manufacturerModelId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerModelId String            @map("manufacturer_model_id")
+  key                 String            @unique
+  title               String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  projects Project[]
+
+  @@map("manufacturer_model_series")
+}
+
+model ManufacturerPart {
+  id                     String       @id @default(uuid())
+  manufacturer           Manufacturer @relation(fields: [manufacturerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerId         String       @map("manufacturer_id")
+  category               Category?    @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  categoryId             String?      @map("category_id")
+  title                  String
+  partNumber             String?      @map("part_number")
+  countryOfManufacture   Country?     @relation(fields: [countryOfManufactureId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  countryOfManufactureId String?      @map("country_of_manufacture_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  postsManufacturerParts PostsManufacturerPart[]
+  projectsParts          ProjectsPart[]
+
+  @@map("manufacturer_parts")
+}
+
+model ManufacturerType {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  manufacturers Manufacturer[]
+
+  @@map("manufacturer_types")
+}
+
+model Post {
+  id         String   @id @default(uuid())
+  title      String
+  body       String   @db.Text()
+  bodyData   Json?    @map("body_data") @db.JsonB()
+  postType   PostType @relation(fields: [postTypeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postTypeId String   @map("post_type_id")
+  user       User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId     String   @map("user_id")
+  published  Boolean  @default(true) @map("published")
+  isRichText Boolean  @default(false) @map("is_rich_text")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  postLikes               PostLike[]
+  postPageViews           PostPageView[]
+  postsAttachments        PostsAttachment[]
+  postsCategories         PostsCategory[]
+  postsComments           PostsComment[]
+  postsImages             PostsImage[]
+  postsManufacturerModels PostsManufacturerModel[]
+  postsManufacturerParts  PostsManufacturerPart[]
+  postsManufacturers      PostsManufacturer[]
+  postsProjects           PostsProject[]
+
+  @@map("posts")
+}
+
+model PostsAttachment {
+  id           String     @id @default(uuid())
+  post         Post       @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId       String     @map("post_id")
+  attachment   Attachment @relation(fields: [attachmentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  attachmentId String     @map("attachment_id")
+  sort         Int?
+
+  user   User?   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId String? @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([postId, attachmentId])
+  @@map("posts_attachments")
+}
+
+model PostsCategory {
+  id         String   @id @default(uuid())
+  category   Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  categoryId String   @map("category_id")
+  post       Post     @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId     String   @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_categories")
+}
+
+model PostsComment {
+  id        String  @id @default(uuid())
+  comment   Comment @relation(fields: [commentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  commentId String  @map("comment_id")
+  post      Post    @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId    String  @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_comments")
+}
+
+model PostLike {
+  id     String @id @default(uuid())
+  post   Post   @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId String @map("post_id")
+  user   User   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([postId, userId])
+  @@map("post_likes")
+}
+
+model PostPageView {
+  id     String @id @default(uuid())
+  post   Post   @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId String @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("post_page_views")
+}
+
+model PostsImage {
+  id      String @id @default(uuid())
+  image   Image  @relation(fields: [imageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageId String @map("image_id")
+  post    Post   @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId  String @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_images")
+}
+
+model PostsManufacturer {
+  id             String       @id @default(uuid())
+  manufacturer   Manufacturer @relation(fields: [manufacturerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerId String       @map("manufacturer_id")
+  post           Post         @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId         String       @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_manufacturers")
+}
+
+model PostsManufacturerPart {
+  id                 String           @id @default(uuid())
+  manufacturerPart   ManufacturerPart @relation(fields: [manufacturerPartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerPartId String           @map("manufacturer_part_id")
+  post               Post             @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId             String           @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_manufacturer_parts")
+}
+
+model PostsManufacturerModel {
+  id                  String            @id @default(uuid())
+  manufacturerModel   ManufacturerModel @relation(fields: [manufacturerModelId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerModelId String            @map("manufacturer_model_id")
+  post                Post              @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId              String            @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_manufacturer_models")
+}
+
+model PostsProject {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId String  @map("project_id")
+  post      Post    @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  postId    String  @map("post_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("posts_projects")
+}
+
+model PostType {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  posts Post[]
+
+  @@map("post_types")
+}
+
+model Project {
+  id                   String  @id @default(uuid())
+  title                String
+  slug                 String  @unique
+  description          String?
+  published            Boolean @default(false)
+  temporaryUserId      String? @map("temporary_user_id")
+  createdByOwner       Boolean @default(true) @map("created_by_owner")
+  notificationsEnabled Boolean @default(true) @map("notifications_enabled")
+  authToken            String? @map("auth_token")
+
+  country   Country? @relation(fields: [countryId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  countryId String?  @map("country_id")
+
+  manufacturerModel   ManufacturerModel @relation(fields: [manufacturerModelId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerModelId String            @map("manufacturer_model_id")
+
+  manufacturerModelSeries   ManufacturerModelSeries? @relation(fields: [manufacturerModelSeriesId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerModelSeriesId String?                  @map("manufacturer_model_series_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  logBookEntries        LogBookEntry[]
+  postsProjects         PostsProject[]
+  projectLikes          ProjectLike[]
+  projectPageViews      ProjectPageView[]
+  projectsAttributes    ProjectsAttribute[]
+  projectsComments      ProjectsComment[]
+  projectsExternalLinks ProjectsExternalLink[]
+  projectsImages        ProjectsImage[]
+  projectsParts         ProjectsPart[]
+  projectsUsers         ProjectsUser[]
+
+  @@map("projects")
+}
+
+model ProjectsComment {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId String  @map("project_id")
+  comment   Comment @relation(fields: [commentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  commentId String  @map("comment_id")
+  sort      Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([projectId, commentId])
+  @@map("projects_comments")
+}
+
+model ProjectsExternalLink {
+  id             String       @id @default(uuid())
+  project        Project      @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId      String       @map("project_id")
+  externalLink   ExternalLink @relation(fields: [externalLinkId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  externalLinkId String       @map("external_link_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("projects_external_links")
+}
+
+model ProjectsAttribute {
+  id               String          @id @default(uuid())
+  project          Project         @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId        String          @map("project_id")
+  attribute        Attribute       @relation(fields: [attributeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  attributeId      String          @map("attribute_id")
+  attributeValue   AttributeValue? @relation(fields: [attributeValueId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  attributeValueId String?         @map("attribute_value_id")
+  value            String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([projectId, attributeId])
+  @@map("projects_attributes")
+}
+
+model ProjectsImage {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId String  @map("project_id")
+  image     Image   @relation(fields: [imageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageId   String  @map("image_id")
+  sort      Int?
+
+  user   User?   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId String? @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  projectImagesComment ProjectImagesComment[]
+
+  @@unique([projectId, imageId])
+  @@map("projects_images")
+}
+
+model ProjectImagesComment {
+  id              String        @id @default(uuid())
+  projectsImage   ProjectsImage @relation(fields: [projectsImageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectsImageId String        @map("projects_image_id")
+  comment         Comment       @relation(fields: [commentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  commentId       String        @map("comment_id")
+  sort            Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([projectsImageId, commentId])
+  @@map("project_images_comments")
+}
+
+model ProjectLike {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId String  @map("project_id")
+  user      User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId    String  @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([projectId, userId])
+  @@map("project_likes")
+}
+
+model ProjectPageView {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId String  @map("project_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("project_page_views")
+}
+
+model ProjectsPart {
+  id                    String           @id @default(uuid())
+  manufacturerPart      ManufacturerPart @relation(fields: [manufacturerPartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  manufacturerPartId    String           @map("manufacturer_part_id")
+  project               Project          @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId             String           @map("project_id")
+  description           String?
+  installedByBusiness   Business?        @relation(fields: [installedByBusinessId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  installedByBusinessId String?          @map("installed_by_business_id")
+  status                Status?          @relation(fields: [statusId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  statusId              String?          @map("status_id")
+  user                  User?            @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId                String?          @map("user_id")
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("updated_at")
+  installedAt DateTime? @map("installed_at")
+
+  projectPartsExternalLinks ProjectPartsExternalLink[]
+  projectPartsImageTags     ProjectPartsImageTag[]
+
+  @@unique([projectId, manufacturerPartId])
+  @@map("projects_manufacturer_parts")
+}
+
+model ProjectPartsImageTag {
+  id            String       @id @default(uuid())
+  projectPart   ProjectsPart @relation(fields: [projectPartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectPartId String       @map("project_part_id")
+  imageTag      ImageTag     @relation(fields: [imageTagId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageTagId    String       @map("image_tag_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("project_parts_image_tags")
+}
+
+model ProjectPartsExternalLink {
+  id             String       @id @default(uuid())
+  projectPart    ProjectsPart @relation(fields: [projectPartId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectPartId  String       @map("project_part_id")
+  externalLink   ExternalLink @relation(fields: [externalLinkId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  externalLinkId String       @map("external_link_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("project_parts_external_links")
+}
+
+model ProjectsUser {
+  id        String  @id @default(uuid())
+  project   Project @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId String  @map("project_id")
+  user      User    @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId    String  @map("user_id")
+  sort      Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([projectId, userId])
+  @@map("projects_users")
+}
+
+model Role {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  users User[]
+
+  @@map("roles")
+}
+
+model Service {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  businessesServices        BusinessesService[]
+  businessLocationsServices BusinessLocationsService[]
+
+  @@map("services")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Status {
+  id    String @id @default(uuid())
+  key   String @unique
+  title String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  projectsParts ProjectsPart[]
+
+  @@map("statuses")
+}
+
+model User {
+  id               String    @id @default(uuid())
+  name             String?
+  email            String?   @unique
+  username         String?   @unique
+  emailVerified    DateTime? @map("email_verified")
+  image            String?
+  bio              String?   @db.Text
+  referredByUserId String?   @map("referred_by_user_id")
+
+  country   Country? @relation(fields: [countryId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  countryId String?  @map("country_id")
+
+  role   Role?   @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  roleId String? @map("role_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  accounts           Account[]
+  attachments        Attachment[]
+  businessesUser     BusinessesUser[]
+  commentLikes       CommentLike[]
+  comments           Comment[]
+  imageLikes         ImageLike[]
+  images             Image[]
+  postLikes          PostLike[]
+  posts              Post[]
+  postsAttachments   PostsAttachment[]
+  projectLikes       ProjectLike[]
+  projectsImages     ProjectsImage[]
+  projectsParts      ProjectsPart[]
+  projectsUsers      ProjectsUser[]
+  sessions           Session[]
+  usersExternalLinks UsersExternalLink[]
+  usersImages        UsersImage[]
+
+  @@map("users")
+}
+
+model UsersExternalLink {
+  id             String       @id @default(uuid())
+  user           User         @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId         String       @map("user_id")
+  externalLink   ExternalLink @relation(fields: [externalLinkId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  externalLinkId String       @map("external_link_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("users_external_links")
+}
+
+model UsersImage {
+  id      String @id @default(uuid())
+  user    User   @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId  String @map("user_id")
+  image   Image  @relation(fields: [imageId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  imageId String @map("image_id")
+  sort    Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@unique([userId, imageId])
+  @@map("users_images")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }

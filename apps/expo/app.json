@@ -15,7 +15,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "info.my4x4.app"
@@ -34,6 +36,9 @@
       "eas": {
         "projectId": "[your_project_id]"
       }
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }

@@ -25,15 +25,18 @@
     "web:prod:serve": "yarn workspace next-app serve"
   },
   "resolutions": {
+    "expo-modules-core": "1.6.0",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-refresh": "^0.14.0",
-    "react-native-svg": "13.4.0",
-    "react-native-web": "^0.18.12"
+    "react-native-svg": "13.9.0",
+    "react-native-web": "~0.19.6",
+    "uuid": "^3.3.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
     "@manypkg/cli": "^0.19.1",
+    "@prisma/client": "latest",
     "check-dependency-version-consistency": "^3.0.3",
     "dotenv": "^16.3.1",
     "dotenv-cli": "^7.3.0",
@@ -44,6 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.5.2",
+    "prisma": "latest",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.3"
   }
