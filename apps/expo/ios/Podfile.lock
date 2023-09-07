@@ -82,7 +82,7 @@ PODS:
     - ExpoModulesCore
   - ExpoLinearGradient (12.3.0):
     - ExpoModulesCore
-  - ExpoModulesCore (1.5.10):
+  - ExpoModulesCore (1.6.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-NativeModulesApple
@@ -792,7 +792,7 @@ SPEC CHECKSUMS:
   ExpoHead: 8da645502363b53eeb99d99276a0adbe0ec8cff0
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoLinearGradient: 5966dd5d49872cc9c104fedc8bbc298b6049b2e8
-  ExpoModulesCore: e5a168deba84f74c0e558befa31dbaea06c00af0
+  ExpoModulesCore: db2673d355fbe239e52d089980984afb45fad3c9
   ExpoSecureStore: 57db3b6da8b59046e2057e95bf7738a8027b47c3
   ExpoWebBrowser: 2c788f9c07718a780fe6d8bf2f6195c47609faaa
   EXSplashScreen: c0e7f2d4a640f3b875808ed0b88575538daf6d82

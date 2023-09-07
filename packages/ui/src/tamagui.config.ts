@@ -60,8 +60,14 @@ export const config = createTamagui({
     body: bodyFont,
     heading: headingFont,
   },
-  themes,
   tokens,
+  themes: {
+    ...themes,
+    light: {
+      ...themes.light,
+      background: 'white',
+    }
+  },
   media: createMedia({
     xs: { maxWidth: 660 },
     sm: { maxWidth: 800 },
@@ -79,3 +85,4 @@ export const config = createTamagui({
     pointerCoarse: { pointer: 'coarse' },
   }),
 })
+
