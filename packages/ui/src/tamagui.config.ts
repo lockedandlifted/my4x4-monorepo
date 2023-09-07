@@ -50,6 +50,16 @@ const bodyFont = createInterFont(
   }
 )
 
+type Themes = typeof themes
+
+const customThemes: Themes = {
+  ...themes,
+  light: {
+    ...themes.light,
+    background: 'white',
+  }
+}
+
 export const config = createTamagui({
   defaultFont: 'body',
   animations,
@@ -61,13 +71,7 @@ export const config = createTamagui({
     heading: headingFont,
   },
   tokens,
-  themes: {
-    ...themes,
-    light: {
-      ...themes.light,
-      background: 'white',
-    }
-  },
+  themes: customThemes,
   media: createMedia({
     xs: { maxWidth: 660 },
     sm: { maxWidth: 800 },
