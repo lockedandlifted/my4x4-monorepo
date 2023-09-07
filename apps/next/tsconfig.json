@@ -4,6 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
     "paths": {
+      "@components/*": ["components/*"],
       "react-native": ["react-native-web"]
     },
     "allowJs": true,
