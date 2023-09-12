@@ -4147,9 +4147,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@kinde-oss/kinde-auth-nextjs@npm:^1.8.12":
-  version: 1.8.12
-  resolution: "@kinde-oss/kinde-auth-nextjs@npm:1.8.12"
+"@kinde-oss/kinde-auth-nextjs@npm:^1.8.18":
+  version: 1.8.18
+  resolution: "@kinde-oss/kinde-auth-nextjs@npm:1.8.18"
   dependencies:
     cookie: ^0.5.0
     crypto: ^1.0.1
@@ -4159,7 +4159,7 @@ __metadata:
   peerDependencies:
     react: ^18.1.0
     react-dom: ^18.1.0
-  checksum: 19e240ca54174b24fc5aad72ee4e223d79400c8a7ecfc0de41982f3fffaed2329e24113fb7a9f710fd4624eeec10b30c41cd528d228c9747e357fbd71bc4d580
+  checksum: 49e9d3d21bb5c5d9a9c86eb5cc2191d24eeb9207b84a50bfc537f4098d4d0c177e552e2290cc2ccfa5ea95000b4a8da5b181d1fe4fe3e0880b7756e9a9cf8521
   languageName: node
   linkType: hard
 
@@ -4268,9 +4268,9 @@ __metadata:
     "@aws-sdk/s3-request-presigner": ^3.398.0
     "@aws-sdk/url-parser": ^3.374.0
     "@aws-sdk/util-format-url": ^3.398.0
-    "@kinde-oss/kinde-auth-nextjs": ^1.8.12
-    "@trpc/client": 10.37.1
-    "@trpc/server": 10.37.1
+    "@kinde-oss/kinde-auth-nextjs": ^1.8.18
+    "@trpc/client": ^10.38.1
+    "@trpc/server": ^10.38.1
     aws-jwt-verify: ^4.0.0
     inngest: ^2.5.2
     superjson: ^1.13.1
@@ -7282,12 +7282,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/client@npm:10.37.1":
-  version: 10.37.1
-  resolution: "@trpc/client@npm:10.37.1"
+"@trpc/client@npm:^10.38.1":
+  version: 10.38.1
+  resolution: "@trpc/client@npm:10.38.1"
   peerDependencies:
-    "@trpc/server": 10.37.1
-  checksum: 82fefed08717f7bf59a9013387c69a990de1d35c142519e1e8f29472cb8d16b6ce4d530d20d336e4a371993d93663e4ff7a86d1652a500a97e0632324df2e899
+    "@trpc/server": 10.38.1
+  checksum: b37dab8703582913411a24400c361f019a1f24b3304e77ad3b4c6d700b3aa5e43b8cd2b83e2cd463ccbe12ae45ef42e186c01bbd85b940871adfd05e31553797
   languageName: node
   linkType: hard
 
@@ -7321,10 +7321,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:10.37.1":
-  version: 10.37.1
-  resolution: "@trpc/server@npm:10.37.1"
-  checksum: 0945bc60e1966f57c5944451a9a24b9d565f50e125e71369882379e6580de4ed2e2575a78c474709876d5e2e849fe0e133658c045484a230158516f59f23d7d7
+"@trpc/server@npm:^10.38.1":
+  version: 10.38.1
+  resolution: "@trpc/server@npm:10.38.1"
+  checksum: f38c74e575400eafcb699dd8846ccecf1449f5d17121e3040d74b88307692fd4693531b855bac7b09fe6d4e2b1b69954646ebf5d1c06ed2e87b27fb98647795c
   languageName: node
   linkType: hard
 
@@ -8293,7 +8293,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "app@workspace:packages/app"
   dependencies:
-    "@kinde-oss/kinde-auth-nextjs": ^1.8.12
+    "@kinde-oss/kinde-auth-nextjs": ^1.8.18
     "@my/ui": 0.0.1
     "@tamagui/animations-react-native": latest
     "@tamagui/colors": latest

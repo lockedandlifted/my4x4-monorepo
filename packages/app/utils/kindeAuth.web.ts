@@ -1,1 +1,0 @@
-export { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";

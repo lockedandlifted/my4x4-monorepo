@@ -4,7 +4,7 @@ import { JwtRsaVerifier } from 'aws-jwt-verify'
 import type { inferAsyncReturnType } from '@trpc/server'
 import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
 
-import type { User } from '@kinde-oss/kinde-auth-nextjs'
+import type { User } from '@prisma/client'
 
 /**
  * 1. CONTEXT
@@ -14,8 +14,13 @@ import type { User } from '@kinde-oss/kinde-auth-nextjs'
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
+type ContextUser = User & {
+  kindeId?: string,
+}
+
 type CreateContextOptions = {
-  user: User | null
+  token?: string,
+  user: ContextUser | null,
 }
 
 /**
@@ -28,8 +33,9 @@ type CreateContextOptions = {
  */
 export const createInnerTRPCContext = async (options: CreateContextOptions) => {
   return {
-    user: options.user,
     prisma,
+    token: options.token,
+    user: options.user,
   }
 }
 
@@ -60,12 +66,23 @@ export const createTRPCContext = async (options: CreateNextContextOptions) => {
     const token = authHeader && authHeader.split(" ")[1];
     const payload = await verifier.verify(token);
 
-    return createInnerTRPCContext({
-      user: {
-        id: payload.sub
+    const kindeUserId = payload.sub as string
+
+    const user = await prisma.user.findFirst({
+      where: {
+        accounts: {
+          some: {
+            provider: 'kinde',
+            providerAccountId: kindeUserId,
+          },
+        },
       },
-    });
-    
+    })
+
+    return await createInnerTRPCContext({
+      token,
+      user,
+    })
   } catch (error) {
     return createInnerTRPCContext({
       user: null,

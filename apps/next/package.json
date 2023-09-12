@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "TAMAGUI_TARGET=web yarn with-env next dev",
+    "dev": "TAMAGUI_TARGET=web yarn with-env next dev -p 3001",
     "build": "cd ../.. && yarn build && cd apps/next && TAMAGUI_TARGET=web yarn with-env next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "serve": "NODE_ENV=production next start --port 8151",
     "lint": "next lint",
     "with-env": "dotenv -e ../../.env --"

@@ -6,90 +6,55 @@
  *
  * We also create a few inference helpers for input and output types.
  */
-import React, { useRef } from 'react'
 import { httpBatchLink, loggerLink } from "@trpc/client";
-import { HTTPHeaders, createTRPCReact } from '@trpc/react-query'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { createTRPCNext } from '@trpc/next'
+import type { HTTPHeaders } from '@trpc/react-query'
 
 import { transformer } from '@my/api/transformer'
-import { useKindeAuth } from 'app/utils/kindeAuth'
+
+import { getToken } from "app/hooks/useSession.web";
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@my/api/index";
 
-const getBaseUrl = () => {
+export const getBaseUrl = () => {
   if (typeof window !== 'undefined') return '' // browser should use relative url
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}` // SSR should use vercel url
 
-  return `http://localhost:${process.env.PORT ?? 3000}` // dev SSR should use localhost
+  return `http://localhost:${process.env.PORT ?? 3001}` // dev SSR should use localhost
 }
 
 /**
  * A set of typesafe hooks for consuming your API.
  */
-export const trpc = createTRPCReact<AppRouter>()
-
-type TRPCProviderProps = {
-  children: React.ReactNode
-}
-
-export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
-  // Kinde Auth
-  const { getToken } = useKindeAuth()
-
-  const authTokenRef = useRef<string>('')
-  authTokenRef.current = getToken() || ''
-
-  // Query Client
-  const [queryClient] = React.useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      }
-    }
-  }))
-    
-  // TRPC Client
-  const [trpcClient] = React.useState(() =>
-    trpc.createClient({
-      /**
-       * Transformer used for data de-serialization from the server.
-       *
-       * @see https://trpc.io/docs/data-transformers
-       */
+export const trpc = createTRPCNext<AppRouter>({
+  config() {
+    return {
       transformer,
-
-      /**
-       * Links used to determine request flow from client to server.
-       *
-       * @see https://trpc.io/docs/links
-       */
       links: [
         loggerLink({
-          enabled: (opts) =>
-            process.env.NODE_ENV === "development" ||
-            (opts.direction === "down" && opts.result instanceof Error),
+          enabled: opts => process.env.NODE_ENV === 'development'
+            || (opts.direction === 'down' && opts.result instanceof Error),
         }),
         httpBatchLink({
           async headers() {
-            return {
-              Authorization: `Bearer ${authTokenRef.current}`,
-            } as HTTPHeaders
+            const authToken = await getToken()
+            return { Authorization: `Bearer ${authToken}` } as HTTPHeaders
           },
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
-    })
-  )
-
-  return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    </trpc.Provider>
-  )
-}
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          },
+        },
+      },
+    }
+  },
+  ssr: false,
+})
 
 /**
  * Inference helper for inputs.
