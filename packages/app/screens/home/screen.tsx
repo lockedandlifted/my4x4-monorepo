@@ -37,7 +37,7 @@ export function HomeScreen() {
     <ScrollView>
       <YStack f={1} jc="center" ai="center" p="$4" space>
         <YStack space="$4" maw={600}>
-          <H1 ta="center">Welcome to Tamagui.</H1>
+          <H1 ta="center">Welcome to MY4X4.</H1>
           <Paragraph ta="center">
             You are logged in as: {isAuthenticated ? user?.email : 'Not logged in'}
           </Paragraph>

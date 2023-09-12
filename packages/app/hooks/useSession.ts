@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react'
-import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x'
 
 import { trpc } from 'app/utils/trpc'
-
-export const client = new KindeSDK(
-  process.env.KINDE_ISSUER_URL || '',
-  process.env.KINDE_NATIVE_POST_CALLBACK_URL || '',
-  process.env.KINDE_CLIENT_ID || '',
-  process.env.KINDE_NATIVE_POST_LOGOUT_REDIRECT_URL || '',
-)
+import { kindeClient } from 'app/utils/kinde'
 
 type User = {
   email: string, 
@@ -37,8 +30,8 @@ type CheckIsAuthenticatedParams = {
 async function checkIsAuthenticated(params: CheckIsAuthenticatedParams) {
   const { setState } = params
 
-  const isAuthenticated = await client.isAuthenticated
-  const userDetails = await client.getUserDetails()
+  const isAuthenticated = await kindeClient.isAuthenticated
+  const userDetails = await kindeClient.getUserDetails()
 
   setState((prevState) => {
     return {
@@ -74,16 +67,16 @@ function useSession(options: UseSessionOptions){
   const { data: user } = userQuery
 
   return {
-    getToken: () => client.getToken(),
+    getToken: () => kindeClient.getToken(),
     isAuthenticated,
     isLoading,
     kindeUser,
     login: async () => {
-      await client.login()
+      await kindeClient.login()
       await checkIsAuthenticated({ setState })
     },
     logout: async () => {
-      await client.logout()
+      await kindeClient.logout()
       await checkIsAuthenticated({ setState })
     },
     user,
