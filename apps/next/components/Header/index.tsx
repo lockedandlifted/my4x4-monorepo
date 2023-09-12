@@ -1,60 +1,61 @@
-import { Image, Link, YStack } from '@my/ui'
+import { useTheme } from 'tamagui'
+import { Image, Link, LicensePlateLogo, Popover, XStack } from '@my/ui'
 import { Menu, Search } from '@tamagui/lucide-icons'
 
-// import LoggedInUser from './LoggedInUser'
+import MainNavigationModal  from '@components/modals/MainNavigationModal'
 
-import LogoUrl from './assets/logo.svg'
+import LoggedInUser from './LoggedInUser'
 
 const Header = () => {
   // const { isOpen, onOpen, onClose } = useDisclosure()
 
+  const theme = useTheme()
+  const logoColor = theme.color.get()
+
   return (
     <>
-      <YStack
+      <XStack
         alignItems="center"
-        height="64px"
+        height={64}
         justifyContent="space-evenly"
         paddingBottom="$4"
         paddingTop="$4"
         width="100%"
       >
-        <YStack width="60px">
-          <Link onClick={() => console.log('click')} fontSize={28} width="28px">
+        <MainNavigationModal
+          callbacks={{
+            closeModal: () => console.log('click'),
+          }}
+          showModal={true}
+        >
+          <Link fontSize={28} width="28px">
             <Menu />
           </Link>
-        </YStack>
+        </MainNavigationModal>
 
-        <Link href="/" marginX="auto">
-          <Image source={LogoUrl} width={82} alt="MY4X4 Logo" />
+        <Link href="/" marginHorizontal="auto">
+          <LicensePlateLogo fillColor={logoColor} height={31} width={82}/>
         </Link>
 
-        <YStack>
-          <Link
-            as="a"
-            alignItems="center"
-            justifyContent="center"
-            border="1px solid"
-            borderColor="gray.200"
-            borderRadius="100%"
-            fontSize="sm"
-            height="28px"
-            href="/search"
-            marginRight="1"
-            width="28px"
-          >
-            <Search />
-          </Link>
+        <Link
+          alignItems="center"
+          display='flex'
+          borderBottomLeftRadius={28}
+          borderBottomRightRadius={28}
+          borderTopLeftRadius={28}
+          borderTopRightRadius={28}
+          borderWidth={1}
+          height={28}
+          href="/search"
+          justifyContent="center"
+          marginRight="$2"
+          width={28}
+        >
+          <Search size={16}/>
+        </Link>
 
-          {/* <LoggedInUser /> */}
-        </YStack>
-      </YStack>
-
-      {/* <MainNavigationModal
-        callbacks={{
-          closeModal: onClose,
-        }}
-        showModal={isOpen}
-      /> */}
+        <LoggedInUser />
+      </XStack>
     </>
   )
 }
