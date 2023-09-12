@@ -18,7 +18,7 @@ import { httpBatchLink } from '@trpc/client'
 
 import { transformer } from '@my/api/transformer'
 
-import useSession from 'app/hooks/useSession'
+import { client } from 'app/hooks/useSession'
 /**
  * A set of typesafe hooks for consuming your API.
  */
@@ -58,14 +58,11 @@ type TRPCProviderProps = {
 }
 
 export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
-  // Kinde Auth
-  const { getToken } = useSession()
-
   const authTokenRef = useRef<string>('')
 
   useEffect(() => {
     async function getAuthToken() {
-      const { access_token } = await getToken()
+      const { access_token } = await client.getToken()
       authTokenRef.current = access_token
     }
 

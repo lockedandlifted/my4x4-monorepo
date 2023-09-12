@@ -5,7 +5,6 @@ import { createParam } from 'solito'
 import { useLink } from 'solito/navigation'
 
 import { trpc } from 'app/utils/trpc'
-import DefaultLayout from '../../../../../apps/next/layouts/DefaultLayout'
 
 const { useParam } = createParam<{ projectId: string }>()
 
@@ -22,17 +21,15 @@ function EditProjectScreen() {
   const { data: project } = projectQuery
 
   return (
-    <DefaultLayout>
-      <YStack f={1} jc="center" ai="center" space>
-        <Paragraph ta="center" fow="700">
-          {`Project ID: ${projectId}`}
-          {project?.title}
-        </Paragraph>
-        <Button {...link} icon={ChevronLeft}>
-          Go Homes
-        </Button>
-      </YStack>
-    </DefaultLayout>
+    <YStack f={1} jc="center" ai="center" space>
+      <Paragraph ta="center" fow="700">
+        {`Project ID: ${projectId}`}
+        {project?.title}
+      </Paragraph>
+      <Button {...link} icon={ChevronLeft}>
+        Go Homes
+      </Button>
+    </YStack>
   )
 }
 

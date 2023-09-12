@@ -24,7 +24,7 @@ import { trpc } from 'app/utils/trpc'
 
 export function HomeScreen() {
   const sessionPayload = useSession({ includeUser: true })
-  const { isAuthenticated } = sessionPayload
+  const { isAuthenticated, login, logout, user } = sessionPayload
 
   const linkProps = useLink({
     href: '/user/nate',
@@ -39,8 +39,7 @@ export function HomeScreen() {
         <YStack space="$4" maw={600}>
           <H1 ta="center">Welcome to Tamagui.</H1>
           <Paragraph ta="center">
-            Here's a starter to show navigating from one screen to another. This screen uses the
-            same code on Next.js and React Native.
+            You are logged in as: {isAuthenticated ? user?.email : 'Not logged in'}
           </Paragraph>
 
           <Separator />
@@ -54,9 +53,11 @@ export function HomeScreen() {
           ))}
         </YStack>
 
-        <XStack>
+        <YStack>
           <Button {...linkProps}>Link to user</Button>
-        </XStack>
+          <Button onPress={login} marginTop="$2">Login</Button>
+          <Button onPress={logout} marginTop="$2">Logout</Button>
+        </YStack>
 
         <SheetDemo />
       </YStack>
