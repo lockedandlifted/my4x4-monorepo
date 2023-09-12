@@ -18,13 +18,13 @@ import React, { useState } from 'react'
 import { useLink } from 'solito/navigation'
 import { Link } from 'solito/link'
 
-import { useKindeAuth } from "app/utils/kindeAuth"
+import useSession from "app/hooks/useSession"
 
 import { trpc } from 'app/utils/trpc'
 
 export function HomeScreen() {
-  const kindeAuthPayload = useKindeAuth()
-  const { isAuthenticated } = kindeAuthPayload
+  const sessionPayload = useSession({ includeUser: true })
+  const { isAuthenticated } = sessionPayload
 
   const linkProps = useLink({
     href: '/user/nate',

@@ -17,7 +17,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink } from '@trpc/client'
 
 import { transformer } from '@my/api/transformer'
-import { useKindeAuth } from 'app/utils/kindeAuth'
+
+import useSession from 'app/hooks/useSession'
 /**
  * A set of typesafe hooks for consuming your API.
  */
@@ -43,13 +44,13 @@ const getBaseUrl = () => {
 
   /**
    * Gets the IP address of your host-machine. If it cannot automatically find it,
-   * you'll have to manually set it. NOTE: Port 3000 should work for most but confirm
+   * you'll have to manually set it. NOTE: Port 3001 should work for most but confirm
    * you don't have anything else running on it, or you'd have to change it.
    */
   const localhost = Constants.expoConfig?.debuggerHost?.split(':')[0]
-  console.log({ localhost })
+
   if (!localhost) throw new Error('failed to get localhost, configure it manually')
-  return `http://${localhost}:3000`
+  return `http://${localhost}:3001`
 }
 
 type TRPCProviderProps = {
@@ -58,7 +59,7 @@ type TRPCProviderProps = {
 
 export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
   // Kinde Auth
-  const { getToken } = useKindeAuth()
+  const { getToken } = useSession()
 
   const authTokenRef = useRef<string>('')
 

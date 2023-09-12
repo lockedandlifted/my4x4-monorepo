@@ -3,11 +3,15 @@ import '@tamagui/font-inter/css/400.css'
 import '@tamagui/font-inter/css/700.css'
 import 'raf/polyfill'
 
+import React from 'react'
+import Head from 'next/head'
 import { KindeProvider } from "@kinde-oss/kinde-auth-nextjs"
 import { NextThemeProvider, useRootTheme } from '@tamagui/next-theme'
+
 import { Provider } from 'app/provider'
-import Head from 'next/head'
-import React from 'react'
+
+import { trpc } from 'app/utils/trpc.web'
+
 import type { SolitoAppProps } from 'solito'
 
 if (process.env.NODE_ENV === 'production') {
@@ -18,7 +22,7 @@ function MyApp({ Component, pageProps }: SolitoAppProps) {
   return (
     <>
       <Head>
-        <title>Tamagui Example App</title>
+        <title>MY4X4</title>
         <meta name="description" content="Tamagui, Solito, Expo & Next.js" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -48,4 +52,4 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default MyApp
+export default trpc.withTRPC(MyApp)

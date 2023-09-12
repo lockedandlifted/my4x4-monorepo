@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { KindeSDK } from '@kinde-oss/react-native-sdk-0-7x';
 
 export const client = new KindeSDK(
@@ -13,7 +13,7 @@ const defaultState = {
   isLoading: true,
 }
 
-export function useKindeAuth(){
+function useSession(){
   const [state, setState] = useState(defaultState)
   const { isAuthenticated, isLoading } = state
 
@@ -41,4 +41,4 @@ export function useKindeAuth(){
   }
 }
 
-export default useKindeAuth
+export default useSession

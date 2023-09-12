@@ -7,7 +7,7 @@
     "*.css"
   ],
   "dependencies": {
-    "@kinde-oss/kinde-auth-nextjs": "^1.8.12",
+    "@kinde-oss/kinde-auth-nextjs": "^1.8.18",
     "@my/ui": "0.0.1",
     "@tamagui/animations-react-native": "latest",
     "@tamagui/colors": "latest",
