@@ -47,6 +47,12 @@ function useSession(options: UseSessionOptions){
     getToken,
     isAuthenticated,
     isLoading,
+    login: async () => {
+      window.location.href = '/api/auth/login'
+    },
+    logout: async () => {
+      window.location.href = '/api/auth/logout'
+    },
     kindeUser,
     user,
   }
