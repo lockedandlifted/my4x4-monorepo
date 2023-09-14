@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import ImageKitContext from '@contexts/imageKit'
+import ImageKitContext from 'app/contexts/imageKit'
 
 function useImageUrl(options: Transformation) {
   const { enabled = false, path, ...restOptions } = options

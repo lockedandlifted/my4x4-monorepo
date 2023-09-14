@@ -1,19 +1,15 @@
 import { Car, Home, MessagesSquare, PlusCircle } from '@tamagui/lucide-icons'
 import { ListItem, Popover, YStack } from 'tamagui' 
 
-type MainNavigationModalProps = {
-  callbacks: {
-    closeModal: VoidFunction,
-  },
+type MainNavigationPopoverProps = {
   children: React.ReactNode,
-  showModal: boolean,
 }
 
-const MainNavigationModal = (props: MainNavigationModalProps) => {
-  const { callbacks: { closeModal }, children, showModal } = props
+const MainNavigationPopover = (props: MainNavigationPopoverProps) => {
+  const { children } = props
 
   return (
-    <Popover allowFlip open={showModal}size="$5">
+    <Popover allowFlip size="$5">
       <Popover.Trigger asChild>
         {children}
       </Popover.Trigger>
@@ -50,4 +46,4 @@ const MainNavigationModal = (props: MainNavigationModalProps) => {
   )
 }
 
-export default MainNavigationModal
+export default MainNavigationPopover

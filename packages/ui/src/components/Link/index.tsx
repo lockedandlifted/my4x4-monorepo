@@ -12,6 +12,9 @@ export const Link = styled(Anchor, {
       black: {
         color: '$black1',
       },
+      gray: {
+        color: '$gray1',
+      },
     },
   } as const,
 })

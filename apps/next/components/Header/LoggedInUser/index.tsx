@@ -1,35 +1,33 @@
-import { SizableText, YStack } from '@my/ui'
+import { YStack } from '@my/ui'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
 import { User } from '@tamagui/lucide-icons'
 
 import useImageUrl from '@hooks/useImageUrl'
-// import useSession from '@hooks/useSession'
+import useSession from '@hooks/useSession'
 
 const LoggedInUser = () => {
-  // const { isAuthenticated, user } = useSession({ includeUser: true })
+  const { isAuthenticated, user } = useSession({ includeUser: true })
 
-  // const image = user?.usersImages?.[0]?.image
-  // const hasImage = !!image
+  const image = user?.usersImages?.[0]?.image
+  const hasImage = !!image
 
-  // const { imageUrl } = useImageUrl({
-  //   enabled: hasImage,
-  //   path: image?.fileKey,
-  //   transformation: [{
-  //     focus: 'auto',
-  //     height: '56',
-  //     width: '56',
-  //   }],
-  // })
+  const { imageUrl } = useImageUrl({
+    enabled: hasImage,
+    path: image?.fileKey,
+    transformation: [{
+      focus: 'auto',
+      height: '56',
+      width: '56',
+    }],
+  })
 
   return (
-    <NextLink href="">
+    <NextLink href={!isAuthenticated ? '/users/login' : '/users/account'}>
       <YStack
         alignItems="center"
-        borderBottomLeftRadius={28}
-        borderBottomRightRadius={28}
-        borderTopLeftRadius={28}
-        borderTopRightRadius={28}
+        borderColor="$borderColor"
+        borderRadius={28}
         borderWidth={1}
         height={28}
         justifyContent="center"
@@ -38,14 +36,14 @@ const LoggedInUser = () => {
       >
         <User size={16}/>
 
-        {/* {!!imageUrl && (
+        {!!imageUrl && (
           <NextImage
             alt="User Profile Image"
             height={28}
             width={28}
             src={imageUrl}
           />
-        )} */}
+        )}
       </YStack>
     </NextLink>
   )
