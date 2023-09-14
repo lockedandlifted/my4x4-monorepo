@@ -2,7 +2,7 @@ import { useTheme } from 'tamagui'
 import { Image, Link, LicensePlateLogo, Popover, XStack } from '@my/ui'
 import { Menu, Search } from '@tamagui/lucide-icons'
 
-import MainNavigationModal  from '@components/modals/MainNavigationModal'
+import MainNavigationPopover  from '@components/MainNavigationPopover'
 
 import LoggedInUser from './LoggedInUser'
 
@@ -22,16 +22,11 @@ const Header = () => {
         paddingTop="$4"
         width="100%"
       >
-        <MainNavigationModal
-          callbacks={{
-            closeModal: () => console.log('click'),
-          }}
-          showModal={true}
-        >
+        <MainNavigationPopover>
           <Link fontSize={28} width="28px">
             <Menu />
           </Link>
-        </MainNavigationModal>
+        </MainNavigationPopover>
 
         <Link href="/" marginHorizontal="auto">
           <LicensePlateLogo fillColor={logoColor} height={31} width={82}/>
@@ -40,10 +35,8 @@ const Header = () => {
         <Link
           alignItems="center"
           display='flex'
-          borderBottomLeftRadius={28}
-          borderBottomRightRadius={28}
-          borderTopLeftRadius={28}
-          borderTopRightRadius={28}
+          borderColor="$borderColor"
+          borderRadius={28}
           borderWidth={1}
           height={28}
           href="/search"

@@ -54,10 +54,15 @@ type Themes = typeof themes
 
 const customThemes: Themes = {
   ...themes,
+  dark: {
+    ...themes.dark,
+    borderColor: tokens.color.gray8Dark.val,
+  },
   light: {
     ...themes.light,
     background: 'white',
-  }
+    borderColor: tokens.color.gray8Light.val,
+  },
 }
 
 export const config = createTamagui({
