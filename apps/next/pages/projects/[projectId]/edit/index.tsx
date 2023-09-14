@@ -1,15 +1,24 @@
-import Head from 'next/head'
-import EditProject from 'app/screens/projects/EditProject'
+import { useRouter } from 'next/router'
+
+import { trpc } from 'app/utils/trpc'
 
 import DefaultLayout from 'layouts/DefaultLayout'
+import Actions from '@components/Project/Actions'
+import MainImage from '@components/Project/MainImage'
 
 function EditProjectPage() {
+  const { query: { projectId } } = useRouter()
+
+  const projectQuery = trpc.projects.getProjectById.useQuery(
+    { id: projectId },
+    { enabled: !!projectId },
+  )
+  const { data: project } = projectQuery
+
   return (
     <DefaultLayout>
-      <Head>
-        <title>Project</title>
-      </Head>
-      <EditProject />
+      <MainImage project={project}/>
+      <Actions project={project}/>
     </DefaultLayout>
   )
 }

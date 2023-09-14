@@ -1,5 +1,5 @@
 import { useTheme } from 'tamagui'
-import { Image, Link, LicensePlateLogo, Popover, XStack } from '@my/ui'
+import { Link, LicensePlateLogo, XStack } from '@my/ui'
 import { Menu, Search } from '@tamagui/lucide-icons'
 
 import MainNavigationPopover  from '@components/MainNavigationPopover'
@@ -7,8 +7,6 @@ import MainNavigationPopover  from '@components/MainNavigationPopover'
 import LoggedInUser from './LoggedInUser'
 
 const Header = () => {
-  // const { isOpen, onOpen, onClose } = useDisclosure()
-
   const theme = useTheme()
   const logoColor = theme.color.get()
 
