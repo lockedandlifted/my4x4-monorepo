@@ -76,11 +76,12 @@ const MainImage = (props: MainImageProps) => {
       )}
 
       <GradientComponent
-        colors={['rgba(0,0,0,0.90)', 'rgba(0,0,0,0.60)', 'rgba(0,0,0,0.0)']}
+        colors={['rgba(0,0,0,0.90)', 'rgba(0,0,0,0.60)', 'rgba(0,0,0,0)']}
         locations={[0, 0.6, 1]}
-        end={[0, 0]}
-        height="100%"
-        start={[0, 1]}
+        end={{ x: 0, y: 0 }}
+        height="30%"
+        marginTop="auto"
+        start={{ x: 0, y: 1 }}
         width="100%"
         zIndex={1}
       >
@@ -108,8 +109,6 @@ const MainImage = (props: MainImageProps) => {
           </Button>
         )}
       </GradientComponent>
-
-     {!!imageUrl && <NextImage alt="Project Main Image" src={imageUrl || ''} style={{ objectFit: 'cover' }} height={200} width={100}/>} 
 
       {uppy && (
         <DashboardModal

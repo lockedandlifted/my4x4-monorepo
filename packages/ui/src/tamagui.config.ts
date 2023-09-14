@@ -16,7 +16,7 @@ const headingFont = createInterFont({
   },
   weight: {
     6: '400',
-    7: '700',
+    7: '600',
   },
   color: {
     6: '$colorFocus',
@@ -26,15 +26,15 @@ const headingFont = createInterFont({
     5: 2,
     6: 1,
     7: 0,
-    8: -1,
-    9: -2,
-    10: -3,
-    12: -4,
-    14: -5,
-    15: -6,
+    8: 0,
+    9: 0,
+    10: 0,
+    12: 0,
+    14: 0,
+    15: 0,
   },
   face: {
-    700: { normal: 'InterBold' },
+    600: { normal: 'InterBold' },
   },
 })
 
