@@ -42,7 +42,7 @@ const Actions = (props: ActionsProps) => {
         <>
           <Button
             tag="a"
-            backgroundColor="$blue8"
+            theme="blue_active"
             color="white"
             href={`/${project?.slug}/questions`}
             size="$4"

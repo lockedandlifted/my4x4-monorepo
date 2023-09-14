@@ -14,11 +14,12 @@ import useProjectImageUpload from 'app/hooks/useProjectImageUpload'
 import PlaceholderUrl from './assets/placeholder.png'
 
 type MainImageProps = {
+  isLoading?: boolean,
   project: Project,
 }
 
 const MainImage = (props: MainImageProps) => {
-  const { project } = props
+  const { isLoading, project } = props
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
 
@@ -66,7 +67,7 @@ const MainImage = (props: MainImageProps) => {
     >
       {hasImage && imageUrl && <NextImage alt="Project Main Image" fill src={imageUrl} style={{ objectFit: 'cover' }} />}
 
-      {!hasImage && (
+      {!isLoading && !hasImage && (
         <NextImage
           alt="Image Placeholder"
           fill

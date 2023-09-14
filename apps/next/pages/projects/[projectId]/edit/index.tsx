@@ -13,11 +13,11 @@ function EditProjectPage() {
     { id: projectId },
     { enabled: !!projectId },
   )
-  const { data: project } = projectQuery
+  const { data: project, isLoading } = projectQuery
 
   return (
     <DefaultLayout>
-      <MainImage project={project}/>
+      <MainImage isLoading={isLoading} project={project}/>
       <Actions project={project}/>
     </DefaultLayout>
   )
