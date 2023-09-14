@@ -64,9 +64,16 @@ const Footer = ({ generatedAt }: FooterProps) => {
       </XStack>
 
       {!!generatedAt && (
-        <Link borderTopWidth="1px" fontSize={14} paddingBottom="$2" paddingTop="$2">
+        <SizableText
+          borderColor="$borderColor"
+          borderTopWidth="1px"
+          color="$gray8"
+          fontSize={14}
+          paddingBottom="$2" 
+          paddingTop="$2"
+        >
           Generated at {generatedAt}
-        </Link>
+        </SizableText>
       )}
     </YStack>
   )

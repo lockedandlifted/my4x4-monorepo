@@ -56,9 +56,9 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
           }}
         />
 
-      <Button onClick={() => set(current === 'light' ? 'dark' : 'light')}>
-        <Button.Text>Toggle Theme</Button.Text>
-      </Button>
+        <Button onClick={() => set(current === 'light' ? 'dark' : 'light')}>
+          <Button.Text>Toggle Theme</Button.Text>
+        </Button>
 
         <Header />
 
