@@ -10,9 +10,11 @@ const HomePage = ({ time }: InferGetServerSidePropsType<typeof getServerSideProp
     <Head>
       <title>Home</title>
     </Head>
+
     <a href="/api/auth/login">Sign In</a>
     <a href="/api/auth/register">Sign Up</a>
     <a href="/api/auth/logout">Sign Out</a>
+
     <HomeScreen />
   </DefaultLayout>
 )

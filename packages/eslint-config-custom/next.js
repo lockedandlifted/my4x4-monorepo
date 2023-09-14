@@ -1,6 +1,6 @@
 const { resolve } = require("node:path")
 
-const project = resolve(process.cwd(), "tsconfig.json")
+const project = resolve(process.cwd(), "apps/next/tsconfig.json")
 
 module.exports = {
   parser: "@typescript-eslint/parser",
@@ -14,10 +14,15 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   extends: [
     "eslint-config-airbnb",
-    "eslint-config-airbnb-typescript",
     "eslint-config-next",
   ].map(require.resolve),
-  ignorePatterns: ["node_modules/", "dist/"],
+  ignorePatterns: [
+    "node_modules/",
+    "dist/",
+    "public/",
+    ".next/",
+    ".tamagui/",
+  ],
   settings: {
     "import/resolver": {
       typescript: {
