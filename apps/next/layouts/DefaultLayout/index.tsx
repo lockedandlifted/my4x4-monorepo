@@ -24,7 +24,8 @@ const DefaultLayout = (props: DefaultLayoutProps) => {
       <YStack
         justifyContent="center" 
         marginHorizontal="auto"
-        padding="$4"       
+        padding="$4"
+        width="100%"
         $gtSm={{
           maxWidth: 600,
         }}
