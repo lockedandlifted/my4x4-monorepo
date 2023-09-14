@@ -66,6 +66,9 @@ module.exports = function () {
       scrollRestoration: true,
       legacyBrowsers: false,
     },
+    images: {
+      domains: ['ik.imagekit.io'],
+    },
   }
 
   for (const plugin of plugins) {
