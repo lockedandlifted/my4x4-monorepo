@@ -22,7 +22,7 @@ const defaultProjects = [
     id: 'cljqfvw7512043b63jz00zphw',
     slug: '1993-toyota-hilux-l-n106-clisb3fa600063b6mlovufqpd',
     title: '1993 Toyota Hilux LN106',
-    imageUrl: '',
+    imageUrl: 'https://ik.imagekit.io/lockedandlifted/development/tr:fo-auto,h-200,w-200/images/7d150f97-28dd-44d0-9854-7ba4af307316.png',
   },
 ]
 
