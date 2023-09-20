@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["index.ts"],
+  "include": ["client.ts"],
   "ts-node": {
     "experimentalResolver": true,
     "transpileOnly": true,
