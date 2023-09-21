@@ -37,6 +37,7 @@
     "@babel/runtime": "^7.18.9",
     "@manypkg/cli": "^0.19.1",
     "@prisma/client": "latest",
+    "@vercel/og": "^0.5.16",
     "check-dependency-version-consistency": "^3.0.3",
     "dotenv": "^16.3.1",
     "dotenv-cli": "^7.3.0",

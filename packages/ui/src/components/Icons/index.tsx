@@ -1,3 +1,5 @@
+export * from './Comment'
 export * from './Instagram'
 export * from './LicensePlateLogo'
+export * from './Like'
 export * from './TikTok'
