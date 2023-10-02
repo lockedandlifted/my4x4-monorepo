@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
     "strictNullChecks": true,
+    "module": "esnext",
     "noUncheckedIndexedAccess": true,
     "paths": {
       "@my/api/*": ["./packages/api/*"],
       "@my/db/*": ["./packages/db/*"],
+      "@my/fonts/*": ["./packages/fonts/*"],
       "@my/ui/*": ["./packages/ui/*"],
       "app/*": ["./packages/app/*"]
     }
